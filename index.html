@@ -10,14 +10,14 @@
         
         body { 
             font-family: 'Inter', sans-serif;
-            background-color: #f8fafc;
+            background-color: #f0fdf4; /* Emerald 50 */
         }
 
         .game-grid {
             display: grid;
             grid-template-columns: repeat(14, 1fr);
             gap: 2px;
-            background-color: #e2e8f0;
+            background-color: #d1fae5; /* Emerald 100 */
             padding: 2px;
             border-radius: 8px;
             user-select: none;
@@ -32,19 +32,19 @@
             justify-content: center;
             font-weight: 700;
             font-size: clamp(0.7rem, 2vw, 1rem);
-            color: #475569;
+            color: #064e3b; /* Emerald 900 */
             cursor: pointer;
             transition: all 0.1s ease;
             border-radius: 2px;
         }
 
         .cell.selecting {
-            background-color: #e0e7ff;
-            color: #4338ca;
+            background-color: #d1fae5; /* Emerald 100 */
+            color: #059669; /* Emerald 600 */
         }
 
         .cell.found {
-            background-color: #4f46e5;
+            background-color: #10b981; /* Emerald 500 */
             color: white;
         }
 
@@ -52,20 +52,20 @@
             font-size: 0.75rem;
             padding: 4px 10px;
             border-radius: 9999px;
-            background-color: #f1f5f9;
-            color: #64748b;
+            background-color: #ecfdf5; /* Emerald 50 */
+            color: #065f46; /* Emerald 800 */
             font-weight: 600;
+            border: 1px solid #a7f3d0;
             transition: all 0.3s ease;
         }
 
         .word-badge.found {
-            background-color: #e0e7ff;
-            color: #4338ca;
+            background-color: #d1fae5;
+            color: #10b981;
             text-decoration: line-through;
             opacity: 0.6;
         }
 
-        /* Animación para palabras encontradas */
         @keyframes found-pop {
             0% { transform: scale(1); }
             50% { transform: scale(1.1); }
@@ -78,33 +78,33 @@
 </head>
 <body class="min-h-screen flex items-center justify-center p-4">
 
-    <div class="bg-white w-full max-w-5xl rounded-2xl shadow-xl border border-slate-200 overflow-hidden flex flex-col md:flex-row">
+    <div class="bg-white w-full max-w-5xl rounded-2xl shadow-xl border border-emerald-100 overflow-hidden flex flex-col md:flex-row">
         
         <!-- Sidebar -->
-        <div class="w-full md:w-72 bg-slate-50 border-r border-slate-200 p-6 flex flex-col">
+        <div class="w-full md:w-72 bg-emerald-50/50 border-r border-emerald-100 p-6 flex flex-col">
             <div class="mb-8">
-                <span class="text-[10px] font-bold text-indigo-600 uppercase tracking-widest">Recurso Educativo</span>
-                <h1 class="text-xl font-extrabold text-slate-800 leading-tight">Internacionalización del Currículo</h1>
+                <span class="text-[10px] font-bold text-emerald-600 uppercase tracking-widest">Recurso Educativo</span>
+                <h1 class="text-xl font-extrabold text-emerald-900 leading-tight">Internacionalización Docente</h1>
             </div>
 
             <div class="flex-grow">
-                <h3 class="text-[10px] font-bold text-slate-400 uppercase tracking-wider mb-4">Lista de Términos</h3>
+                <h3 class="text-[10px] font-bold text-emerald-700/50 uppercase tracking-wider mb-4">Conceptos Clave</h3>
                 <div id="word-list" class="flex flex-wrap gap-2">
                     <!-- JS inyecta palabras -->
                 </div>
             </div>
 
-            <div class="mt-8 pt-6 border-t border-slate-200">
+            <div class="mt-8 pt-6 border-t border-emerald-100">
                 <div class="flex justify-between items-end mb-2">
-                    <span class="text-[10px] font-bold text-slate-400 uppercase">Progreso</span>
-                    <span id="progress-text" class="text-lg font-black text-slate-800">0/12</span>
+                    <span class="text-[10px] font-bold text-emerald-600 uppercase">Progreso</span>
+                    <span id="progress-text" class="text-lg font-black text-emerald-900">0/12</span>
                 </div>
-                <div class="w-full bg-slate-200 h-2 rounded-full overflow-hidden">
-                    <div id="progress-bar" class="bg-indigo-600 h-full w-0 transition-all duration-500"></div>
+                <div class="w-full bg-emerald-100 h-2 rounded-full overflow-hidden">
+                    <div id="progress-bar" class="bg-emerald-500 h-full w-0 transition-all duration-500"></div>
                 </div>
-                <button id="reset-btn" class="mt-6 w-full flex items-center justify-center gap-2 text-sm font-semibold text-slate-500 hover:text-indigo-600 transition">
+                <button id="reset-btn" class="mt-6 w-full flex items-center justify-center gap-2 text-sm font-semibold text-emerald-700 hover:text-emerald-900 transition">
                     <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"></path></svg>
-                    Reiniciar tablero
+                    Nuevo Tablero
                 </button>
             </div>
         </div>
@@ -115,20 +115,20 @@
                 <div id="grid" class="game-grid">
                     <!-- JS inyecta celdas -->
                 </div>
-                <div id="current-word" class="mt-6 h-6 text-center text-sm font-bold text-indigo-500 tracking-[0.4em] uppercase"></div>
+                <div id="current-word" class="mt-6 h-6 text-center text-sm font-bold text-emerald-600 tracking-[0.4em] uppercase"></div>
             </div>
         </div>
     </div>
 
     <!-- Victoria -->
-    <div id="victory-modal" class="hidden fixed inset-0 bg-slate-900/60 backdrop-blur-sm flex items-center justify-center z-50 p-4">
-        <div class="bg-white p-8 rounded-2xl max-w-sm w-full text-center shadow-2xl">
-            <div class="w-16 h-16 bg-green-100 text-green-600 rounded-full flex items-center justify-center mx-auto mb-4">
+    <div id="victory-modal" class="hidden fixed inset-0 bg-emerald-950/60 backdrop-blur-sm flex items-center justify-center z-50 p-4">
+        <div class="bg-white p-8 rounded-2xl max-w-sm w-full text-center shadow-2xl border border-emerald-100">
+            <div class="w-16 h-16 bg-emerald-100 text-emerald-600 rounded-full flex items-center justify-center mx-auto mb-4">
                 <svg class="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path></svg>
             </div>
-            <h2 class="text-2xl font-bold text-slate-800">¡Actividad Completa!</h2>
-            <p class="text-slate-500 mt-2">Has identificado todos los conceptos clave para la práctica docente global.</p>
-            <button onclick="location.reload()" class="mt-6 w-full py-3 bg-indigo-600 hover:bg-indigo-700 text-white rounded-xl font-bold transition">Volver a jugar</button>
+            <h2 class="text-2xl font-bold text-emerald-900">¡Logrado!</h2>
+            <p class="text-emerald-600/70 mt-2">Has completado el análisis de los términos clave de internacionalización.</p>
+            <button onclick="location.reload()" class="mt-6 w-full py-3 bg-emerald-600 hover:bg-emerald-700 text-white rounded-xl font-bold transition">Reiniciar</button>
         </div>
     </div>
 
@@ -147,15 +147,25 @@
         let selectionIndices = [];
 
         function init() {
-            // 1. Colocar palabras
+            // 1. Colocar palabras con alta probabilidad diagonal
             words.sort((a, b) => b.length - a.length).forEach(word => {
                 let placed = false;
                 let attempts = 0;
-                while (!placed && attempts < 300) {
-                    const directions = [[0,1],[1,0],[1,1],[0,-1],[-1,0],[-1,-1]];
-                    const dir = directions[Math.floor(Math.random() * directions.length)];
+                while (!placed && attempts < 500) {
+                    // Direcciones: 40% Diagonales, 30% H, 30% V
+                    const rand = Math.random();
+                    let dir;
+                    if (rand < 0.4) {
+                        dir = [[1,1], [1,-1], [-1,1], [-1,-1]][Math.floor(Math.random()*4)];
+                    } else if (rand < 0.7) {
+                        dir = [[0,1], [0,-1]][Math.floor(Math.random()*2)];
+                    } else {
+                        dir = [[1,0], [-1,0]][Math.floor(Math.random()*2)];
+                    }
+
                     const r = Math.floor(Math.random() * gridSize);
                     const c = Math.floor(Math.random() * gridSize);
+                    
                     if (canPlace(word, r, c, dir)) {
                         for (let i = 0; i < word.length; i++) {
                             gridData[r + i * dir[0]][c + i * dir[1]] = word[i];
@@ -167,9 +177,10 @@
             });
 
             // 2. Rellenar
+            const letters = "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
             for(let r=0; r<gridSize; r++) {
                 for(let c=0; c<gridSize; c++) {
-                    if(!gridData[r][c]) gridData[r][c] = "ABCDEFGHIJKLMNOPQRSTUVWXYZ"[Math.floor(Math.random()*26)];
+                    if(!gridData[r][c]) gridData[r][c] = letters[Math.floor(Math.random()*letters.length)];
                 }
             }
 
@@ -211,14 +222,12 @@
                 const span = document.createElement('span');
                 span.className = `word-badge ${foundWords.includes(w) ? 'found' : ''}`;
                 span.textContent = w;
-                span.id = `badge-${w}`;
                 list.appendChild(span);
             });
         }
 
         function setupEvents() {
             const container = document.getElementById('grid');
-            
             const getPos = (e) => {
                 const target = e.target.closest('.cell');
                 if (!target) return null;
@@ -272,15 +281,14 @@
                     renderWordList();
                     updateProgress();
                 }
-
                 selectionIndices = [];
                 updateVisuals();
+                document.getElementById('current-word').textContent = "";
             };
 
             container.addEventListener('mousedown', handleStart);
             window.addEventListener('mousemove', handleMove);
             window.addEventListener('mouseup', handleEnd);
-
             container.addEventListener('touchstart', handleStart, {passive: false});
             window.addEventListener('touchmove', handleMove, {passive: false});
             window.addEventListener('touchend', handleEnd);
@@ -288,15 +296,15 @@
 
         function updateVisuals() {
             document.querySelectorAll('.cell').forEach(c => c.classList.remove('selecting'));
-            let currentStr = "";
+            let str = "";
             selectionIndices.forEach(p => {
                 const el = document.querySelector(`[data-r="${p.r}"][data-c="${p.c}"]`);
                 if (el) {
                     el.classList.add('selecting');
-                    currentStr += el.textContent;
+                    str += el.textContent;
                 }
             });
-            document.getElementById('current-word').textContent = currentStr;
+            document.getElementById('current-word').textContent = str;
         }
 
         function updateProgress() {
@@ -310,7 +318,6 @@
         }
 
         document.getElementById('reset-btn').onclick = () => location.reload();
-
         window.onload = init;
     </script>
 </body>
