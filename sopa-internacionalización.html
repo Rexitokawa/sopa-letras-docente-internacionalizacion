@@ -1,0 +1,317 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sopa de Letras - Internacionalización</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800&display=swap');
+        
+        body { 
+            font-family: 'Inter', sans-serif;
+            background-color: #f8fafc;
+        }
+
+        .game-grid {
+            display: grid;
+            grid-template-columns: repeat(14, 1fr);
+            gap: 2px;
+            background-color: #e2e8f0;
+            padding: 2px;
+            border-radius: 8px;
+            user-select: none;
+            touch-action: none;
+        }
+
+        .cell {
+            aspect-ratio: 1 / 1;
+            background-color: white;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 700;
+            font-size: clamp(0.7rem, 2vw, 1rem);
+            color: #475569;
+            cursor: pointer;
+            transition: all 0.1s ease;
+            border-radius: 2px;
+        }
+
+        .cell.selecting {
+            background-color: #e0e7ff;
+            color: #4338ca;
+        }
+
+        .cell.found {
+            background-color: #4f46e5;
+            color: white;
+        }
+
+        .word-badge {
+            font-size: 0.75rem;
+            padding: 4px 10px;
+            border-radius: 9999px;
+            background-color: #f1f5f9;
+            color: #64748b;
+            font-weight: 600;
+            transition: all 0.3s ease;
+        }
+
+        .word-badge.found {
+            background-color: #e0e7ff;
+            color: #4338ca;
+            text-decoration: line-through;
+            opacity: 0.6;
+        }
+
+        /* Animación para palabras encontradas */
+        @keyframes found-pop {
+            0% { transform: scale(1); }
+            50% { transform: scale(1.1); }
+            100% { transform: scale(1); }
+        }
+        .cell.found-anim {
+            animation: found-pop 0.3s ease-out;
+        }
+    </style>
+</head>
+<body class="min-h-screen flex items-center justify-center p-4">
+
+    <div class="bg-white w-full max-w-5xl rounded-2xl shadow-xl border border-slate-200 overflow-hidden flex flex-col md:flex-row">
+        
+        <!-- Sidebar -->
+        <div class="w-full md:w-72 bg-slate-50 border-r border-slate-200 p-6 flex flex-col">
+            <div class="mb-8">
+                <span class="text-[10px] font-bold text-indigo-600 uppercase tracking-widest">Recurso Educativo</span>
+                <h1 class="text-xl font-extrabold text-slate-800 leading-tight">Internacionalización del Currículo</h1>
+            </div>
+
+            <div class="flex-grow">
+                <h3 class="text-[10px] font-bold text-slate-400 uppercase tracking-wider mb-4">Lista de Términos</h3>
+                <div id="word-list" class="flex flex-wrap gap-2">
+                    <!-- JS inyecta palabras -->
+                </div>
+            </div>
+
+            <div class="mt-8 pt-6 border-t border-slate-200">
+                <div class="flex justify-between items-end mb-2">
+                    <span class="text-[10px] font-bold text-slate-400 uppercase">Progreso</span>
+                    <span id="progress-text" class="text-lg font-black text-slate-800">0/12</span>
+                </div>
+                <div class="w-full bg-slate-200 h-2 rounded-full overflow-hidden">
+                    <div id="progress-bar" class="bg-indigo-600 h-full w-0 transition-all duration-500"></div>
+                </div>
+                <button id="reset-btn" class="mt-6 w-full flex items-center justify-center gap-2 text-sm font-semibold text-slate-500 hover:text-indigo-600 transition">
+                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"></path></svg>
+                    Reiniciar tablero
+                </button>
+            </div>
+        </div>
+
+        <!-- Tablero -->
+        <div class="flex-grow p-4 lg:p-8 bg-white flex flex-col items-center justify-center">
+            <div class="w-full max-w-[500px]">
+                <div id="grid" class="game-grid">
+                    <!-- JS inyecta celdas -->
+                </div>
+                <div id="current-word" class="mt-6 h-6 text-center text-sm font-bold text-indigo-500 tracking-[0.4em] uppercase"></div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Victoria -->
+    <div id="victory-modal" class="hidden fixed inset-0 bg-slate-900/60 backdrop-blur-sm flex items-center justify-center z-50 p-4">
+        <div class="bg-white p-8 rounded-2xl max-w-sm w-full text-center shadow-2xl">
+            <div class="w-16 h-16 bg-green-100 text-green-600 rounded-full flex items-center justify-center mx-auto mb-4">
+                <svg class="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path></svg>
+            </div>
+            <h2 class="text-2xl font-bold text-slate-800">¡Actividad Completa!</h2>
+            <p class="text-slate-500 mt-2">Has identificado todos los conceptos clave para la práctica docente global.</p>
+            <button onclick="location.reload()" class="mt-6 w-full py-3 bg-indigo-600 hover:bg-indigo-700 text-white rounded-xl font-bold transition">Volver a jugar</button>
+        </div>
+    </div>
+
+    <script>
+        const words = [
+            "INTEGRAL", "COLABORATIVO", "DOCENTE", "INTERCULTURAL", 
+            "GLOBAL", "ANALISIS", "COMUNICACION", "MULTICULTURAL", 
+            "MIGRACION", "CURRICULO", "HABILIDADES", "CONTEXTOS"
+        ];
+
+        const gridSize = 14;
+        let gridData = Array(gridSize).fill().map(() => Array(gridSize).fill(''));
+        let foundWords = [];
+        let isDragging = false;
+        let startPos = null;
+        let selectionIndices = [];
+
+        function init() {
+            // 1. Colocar palabras
+            words.sort((a, b) => b.length - a.length).forEach(word => {
+                let placed = false;
+                let attempts = 0;
+                while (!placed && attempts < 300) {
+                    const directions = [[0,1],[1,0],[1,1],[0,-1],[-1,0],[-1,-1]];
+                    const dir = directions[Math.floor(Math.random() * directions.length)];
+                    const r = Math.floor(Math.random() * gridSize);
+                    const c = Math.floor(Math.random() * gridSize);
+                    if (canPlace(word, r, c, dir)) {
+                        for (let i = 0; i < word.length; i++) {
+                            gridData[r + i * dir[0]][c + i * dir[1]] = word[i];
+                        }
+                        placed = true;
+                    }
+                    attempts++;
+                }
+            });
+
+            // 2. Rellenar
+            for(let r=0; r<gridSize; r++) {
+                for(let c=0; c<gridSize; c++) {
+                    if(!gridData[r][c]) gridData[r][c] = "ABCDEFGHIJKLMNOPQRSTUVWXYZ"[Math.floor(Math.random()*26)];
+                }
+            }
+
+            renderGrid();
+            renderWordList();
+            setupEvents();
+        }
+
+        function canPlace(word, r, c, dir) {
+            const endR = r + (word.length - 1) * dir[0];
+            const endC = c + (word.length - 1) * dir[1];
+            if (endR < 0 || endR >= gridSize || endC < 0 || endC >= gridSize) return false;
+            for (let i = 0; i < word.length; i++) {
+                const curr = gridData[r + i * dir[0]][c + i * dir[1]];
+                if (curr !== '' && curr !== word[i]) return false;
+            }
+            return true;
+        }
+
+        function renderGrid() {
+            const container = document.getElementById('grid');
+            container.innerHTML = '';
+            for(let r=0; r<gridSize; r++) {
+                for(let c=0; c<gridSize; c++) {
+                    const cell = document.createElement('div');
+                    cell.className = 'cell';
+                    cell.textContent = gridData[r][c];
+                    cell.dataset.r = r;
+                    cell.dataset.c = c;
+                    container.appendChild(cell);
+                }
+            }
+        }
+
+        function renderWordList() {
+            const list = document.getElementById('word-list');
+            list.innerHTML = '';
+            words.sort().forEach(w => {
+                const span = document.createElement('span');
+                span.className = `word-badge ${foundWords.includes(w) ? 'found' : ''}`;
+                span.textContent = w;
+                span.id = `badge-${w}`;
+                list.appendChild(span);
+            });
+        }
+
+        function setupEvents() {
+            const container = document.getElementById('grid');
+            
+            const getPos = (e) => {
+                const target = e.target.closest('.cell');
+                if (!target) return null;
+                return { r: parseInt(target.dataset.r), c: parseInt(target.dataset.c) };
+            };
+
+            const handleStart = (e) => {
+                const pos = getPos(e) || (e.touches && getPos({target: document.elementFromPoint(e.touches[0].clientX, e.touches[0].clientY)}));
+                if (!pos) return;
+                isDragging = true;
+                startPos = pos;
+                selectionIndices = [pos];
+                updateVisuals();
+            };
+
+            const handleMove = (e) => {
+                if (!isDragging) return;
+                const clientX = e.clientX || (e.touches && e.touches[0].clientX);
+                const clientY = e.clientY || (e.touches && e.touches[0].clientY);
+                const pos = getPos({target: document.elementFromPoint(clientX, clientY)});
+                
+                if (pos) {
+                    const dr = pos.r - startPos.r;
+                    const dc = pos.c - startPos.c;
+                    if (dr === 0 || dc === 0 || Math.abs(dr) === Math.abs(dc)) {
+                        const steps = Math.max(Math.abs(dr), Math.abs(dc));
+                        const sR = dr === 0 ? 0 : dr / steps;
+                        const sC = dc === 0 ? 0 : dc / steps;
+                        selectionIndices = [];
+                        for(let i=0; i<=steps; i++) {
+                            selectionIndices.push({ r: startPos.r + i*sR, c: startPos.c + i*sC });
+                        }
+                        updateVisuals();
+                    }
+                }
+            };
+
+            const handleEnd = () => {
+                if (!isDragging) return;
+                isDragging = false;
+                const selectedWord = selectionIndices.map(p => gridData[p.r][p.c]).join('');
+                const reversed = selectedWord.split('').reverse().join('');
+                const wordFound = words.find(w => (w === selectedWord || w === reversed) && !foundWords.includes(w));
+
+                if (wordFound) {
+                    foundWords.push(wordFound);
+                    selectionIndices.forEach(p => {
+                        const el = document.querySelector(`[data-r="${p.r}"][data-c="${p.c}"]`);
+                        el.classList.add('found', 'found-anim');
+                    });
+                    renderWordList();
+                    updateProgress();
+                }
+
+                selectionIndices = [];
+                updateVisuals();
+            };
+
+            container.addEventListener('mousedown', handleStart);
+            window.addEventListener('mousemove', handleMove);
+            window.addEventListener('mouseup', handleEnd);
+
+            container.addEventListener('touchstart', handleStart, {passive: false});
+            window.addEventListener('touchmove', handleMove, {passive: false});
+            window.addEventListener('touchend', handleEnd);
+        }
+
+        function updateVisuals() {
+            document.querySelectorAll('.cell').forEach(c => c.classList.remove('selecting'));
+            let currentStr = "";
+            selectionIndices.forEach(p => {
+                const el = document.querySelector(`[data-r="${p.r}"][data-c="${p.c}"]`);
+                if (el) {
+                    el.classList.add('selecting');
+                    currentStr += el.textContent;
+                }
+            });
+            document.getElementById('current-word').textContent = currentStr;
+        }
+
+        function updateProgress() {
+            const p = foundWords.length;
+            const total = words.length;
+            document.getElementById('progress-text').textContent = `${p}/${total}`;
+            document.getElementById('progress-bar').style.width = `${(p/total)*100}%`;
+            if (p === total) {
+                setTimeout(() => document.getElementById('victory-modal').classList.remove('hidden'), 400);
+            }
+        }
+
+        document.getElementById('reset-btn').onclick = () => location.reload();
+
+        window.onload = init;
+    </script>
+</body>
+</html>
